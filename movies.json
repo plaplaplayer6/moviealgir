@@ -1,152 +1,75 @@
-const fs = require("fs");
-const readline = require("readline");
-const zlib = require("zlib");
+[
+  { "title": "A Trip to the Moon", "year": 1902, "rating": "G", "genres": ["Sci-Fi"] },
+  { "title": "The Great Train Robbery", "year": 1903, "rating": "G", "genres": ["Western"] },
 
-const TITLE_FILE = "title.basics.tsv.gz";
-const RATING_FILE = "title.ratings.tsv.gz";
+  { "title": "The Kid", "year": 1921, "rating": "G", "genres": ["Comedy"] },
+  { "title": "Nosferatu", "year": 1922, "rating": "UNRATED", "genres": ["Horror"] },
+  { "title": "Metropolis", "year": 1927, "rating": "UNRATED", "genres": ["Sci-Fi"] },
 
-const ratingsMap = new Map();
+  { "title": "Dracula", "year": 1931, "rating": "PG", "genres": ["Horror"] },
+  { "title": "Frankenstein", "year": 1931, "rating": "PG", "genres": ["Horror"] },
+  { "title": "King Kong", "year": 1933, "rating": "PG", "genres": ["Adventure"] },
+  { "title": "Snow White and the Seven Dwarfs", "year": 1937, "rating": "G", "genres": ["Animation"] },
+  { "title": "The Wizard of Oz", "year": 1939, "rating": "G", "genres": ["Fantasy"] },
 
-async function loadRatings() {
+  { "title": "Citizen Kane", "year": 1941, "rating": "PG", "genres": ["Drama"] },
+  { "title": "Casablanca", "year": 1942, "rating": "PG", "genres": ["Romance"] },
+  { "title": "It's a Wonderful Life", "year": 1946, "rating": "PG", "genres": ["Drama"] },
 
-    return new Promise((resolve, reject) => {
+  { "title": "Cinderella", "year": 1950, "rating": "G", "genres": ["Animation"] },
+  { "title": "Godzilla", "year": 1954, "rating": "PG", "genres": ["Sci-Fi"] },
+  { "title": "12 Angry Men", "year": 1957, "rating": "PG", "genres": ["Drama"] },
 
-        const stream =
-            fs.createReadStream(RATING_FILE)
-            .pipe(zlib.createGunzip());
+  { "title": "Psycho", "year": 1960, "rating": "R", "genres": ["Horror"] },
+  { "title": "Mary Poppins", "year": 1964, "rating": "G", "genres": ["Family"] },
+  { "title": "The Good, the Bad and the Ugly", "year": 1966, "rating": "R", "genres": ["Western"] },
+  { "title": "2001: A Space Odyssey", "year": 1968, "rating": "G", "genres": ["Sci-Fi"] },
 
-        const rl =
-            readline.createInterface({
-                input: stream,
-                crlfDelay: Infinity
-            });
+  { "title": "The Godfather", "year": 1972, "rating": "R", "genres": ["Crime"] },
+  { "title": "Jaws", "year": 1975, "rating": "PG", "genres": ["Thriller"] },
+  { "title": "Rocky", "year": 1976, "rating": "PG", "genres": ["Drama"] },
+  { "title": "Star Wars", "year": 1977, "rating": "PG", "genres": ["Sci-Fi"] },
+  { "title": "Alien", "year": 1979, "rating": "R", "genres": ["Horror"] },
 
-        let first = true;
+  { "title": "The Empire Strikes Back", "year": 1980, "rating": "PG", "genres": ["Sci-Fi"] },
+  { "title": "Raiders of the Lost Ark", "year": 1981, "rating": "PG", "genres": ["Adventure"] },
+  { "title": "E.T.", "year": 1982, "rating": "PG", "genres": ["Family"] },
+  { "title": "Ghostbusters", "year": 1984, "rating": "PG", "genres": ["Comedy"] },
+  { "title": "Back to the Future", "year": 1985, "rating": "PG", "genres": ["Sci-Fi"] },
+  { "title": "Die Hard", "year": 1988, "rating": "R", "genres": ["Action"] },
 
-        rl.on("line", line => {
+  { "title": "Home Alone", "year": 1990, "rating": "PG", "genres": ["Comedy"] },
+  { "title": "Terminator 2", "year": 1991, "rating": "R", "genres": ["Action"] },
+  { "title": "Jurassic Park", "year": 1993, "rating": "PG-13", "genres": ["Adventure"] },
+  { "title": "The Lion King", "year": 1994, "rating": "G", "genres": ["Animation"] },
+  { "title": "Toy Story", "year": 1995, "rating": "G", "genres": ["Animation"] },
+  { "title": "Titanic", "year": 1997, "rating": "PG-13", "genres": ["Drama"] },
+  { "title": "The Matrix", "year": 1999, "rating": "R", "genres": ["Sci-Fi"] },
 
-            if (first) {
-                first = false;
-                return;
-            }
+  { "title": "Gladiator", "year": 2000, "rating": "R", "genres": ["Action"] },
+  { "title": "Shrek", "year": 2001, "rating": "PG", "genres": ["Animation"] },
+  { "title": "Spider-Man", "year": 2002, "rating": "PG-13", "genres": ["Action"] },
+  { "title": "Finding Nemo", "year": 2003, "rating": "G", "genres": ["Animation"] },
+  { "title": "The Incredibles", "year": 2004, "rating": "PG", "genres": ["Animation"] },
+  { "title": "Batman Begins", "year": 2005, "rating": "PG-13", "genres": ["Action"] },
+  { "title": "Iron Man", "year": 2008, "rating": "PG-13", "genres": ["Action"] },
+  { "title": "Up", "year": 2009, "rating": "PG", "genres": ["Animation"] },
 
-            const [
-                tconst,
-                averageRating,
-                numVotes
-            ] = line.split("\t");
+  { "title": "Toy Story 3", "year": 2010, "rating": "G", "genres": ["Animation"] },
+  { "title": "The Avengers", "year": 2012, "rating": "PG-13", "genres": ["Action"] },
+  { "title": "Frozen", "year": 2013, "rating": "PG", "genres": ["Animation"] },
+  { "title": "Interstellar", "year": 2014, "rating": "PG-13", "genres": ["Sci-Fi"] },
+  { "title": "Inside Out", "year": 2015, "rating": "PG", "genres": ["Animation"] },
+  { "title": "Moana", "year": 2016, "rating": "PG", "genres": ["Animation"] },
+  { "title": "Coco", "year": 2017, "rating": "PG", "genres": ["Animation"] },
+  { "title": "Spider-Verse", "year": 2018, "rating": "PG", "genres": ["Animation"] },
+  { "title": "Avengers: Endgame", "year": 2019, "rating": "PG-13", "genres": ["Action"] },
 
-            ratingsMap.set(tconst, {
-                imdb: Number(averageRating),
-                votes: Number(numVotes)
-            });
-        });
-
-        rl.on("close", resolve);
-        rl.on("error", reject);
-    });
-}
-
-async function generateMovies() {
-
-    await loadRatings();
-
-    const movies = [];
-
-    const stream =
-        fs.createReadStream(TITLE_FILE)
-        .pipe(zlib.createGunzip());
-
-    const rl =
-        readline.createInterface({
-            input: stream,
-            crlfDelay: Infinity
-        });
-
-    let first = true;
-
-    rl.on("line", line => {
-
-        if (first) {
-            first = false;
-            return;
-        }
-
-        const cols = line.split("\t");
-
-        const [
-            tconst,
-            titleType,
-            primaryTitle,
-            originalTitle,
-            isAdult,
-            startYear,
-            endYear,
-            runtimeMinutes,
-            genres
-        ] = cols;
-
-        if (titleType !== "movie") {
-            return;
-        }
-
-        const rating =
-            ratingsMap.get(tconst);
-
-        movies.push({
-
-            id: tconst,
-
-            title: primaryTitle,
-
-            originalTitle,
-
-            year:
-                startYear === "\\N"
-                    ? null
-                    : Number(startYear),
-
-            adult:
-                isAdult === "1",
-
-            runtime:
-                runtimeMinutes === "\\N"
-                    ? null
-                    : Number(runtimeMinutes),
-
-            genres:
-                genres === "\\N"
-                    ? []
-                    : genres.split(","),
-
-            imdb:
-                rating?.imdb || 0,
-
-            votes:
-                rating?.votes || 0
-        });
-    });
-
-    rl.on("close", () => {
-
-        movies.sort(
-            (a, b) =>
-                b.imdb - a.imdb
-        );
-
-        fs.writeFileSync(
-            "movies.json",
-            JSON.stringify(
-                movies,
-                null,
-                2
-            )
-        );
-
-        console.log(
-            `Generated ${movies.length} movies`
-        );
-    });
-}
-
-generateMovies();
+  { "title": "Dune", "year": 2021, "rating": "PG-13", "genres": ["Sci-Fi"] },
+  { "title": "Top Gun: Maverick", "year": 2022, "rating": "PG-13", "genres": ["Action"] },
+  { "title": "Barbie", "year": 2023, "rating": "PG-13", "genres": ["Comedy"] },
+  { "title": "Oppenheimer", "year": 2023, "rating": "R", "genres": ["Drama"] },
+  { "title": "Inside Out 2", "year": 2024, "rating": "PG", "genres": ["Animation"] },
+  { "title": "Minecraft Movie", "year": 2025, "rating": "PG", "genres": ["Adventure"] },
+  { "title": "Mandalorian & Grogu", "year": 2026, "rating": "PG-13", "genres": ["Sci-Fi"] }
+]
