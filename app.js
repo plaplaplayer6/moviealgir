@@ -1,8 +1,13 @@
 let movies = [];
 
 async function loadMovies() {
-    const res = await fetch("movies.json");
-    movies = await res.json();
+    try {
+        const res = await fetch("movies.json");
+        movies = await res.json();
+        console.log("Loaded movies:", movies.length);
+    } catch (err) {
+        console.error("movies.json failed to load", err);
+    }
 }
 
 const ratingOrder = {
@@ -14,8 +19,8 @@ const ratingOrder = {
     "UNRATED": 5
 };
 
-function allowed(movieRating, limit) {
-    return (ratingOrder[movieRating] ?? 0)
+function allowed(rating, limit) {
+    return (ratingOrder[rating] ?? 0)
         <= ratingOrder[limit];
 }
 
@@ -28,6 +33,11 @@ function shuffle(arr) {
 
 function generate365() {
 
+    if (!movies.length) {
+        alert("Movies not loaded yet");
+        return;
+    }
+
     const limit =
         document.getElementById("ratingFilter").value;
 
@@ -37,28 +47,25 @@ function generate365() {
 
     shuffle(pool);
 
-    const schedule = pool.slice(0, 365);
-
-    render(schedule);
+    render(pool.slice(0, 365));
 }
 
 function render(list) {
 
-    const container =
-        document.getElementById("movieList");
+    const el = document.getElementById("movieList");
 
-    container.innerHTML = "";
+    el.innerHTML = "";
 
     list.forEach((m, i) => {
 
-        container.innerHTML += `
-        <div class="movie-card">
-            <div class="day">Day ${i + 1}</div>
-            <h2>${m.title}</h2>
-            <p>${m.year}</p>
-            <p>${m.rating}</p>
-            <p>${m.genres.join(", ")}</p>
-        </div>
+        el.innerHTML += `
+            <div class="movie-card">
+                <h3>Day ${i + 1}</h3>
+                <h2>${m.title}</h2>
+                <p>${m.year}</p>
+                <p>${m.rating}</p>
+                <p>${(m.genres || []).join(", ")}</p>
+            </div>
         `;
     });
 }
