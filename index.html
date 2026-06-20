@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>365 Movies</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>365 Movies for 365 Days</h1>
+
+    <div class="controls">
+
+        <label>Rating Filter:</label>
+
+        <select id="ratingFilter">
+            <option value="G">G & Under</option>
+            <option value="PG">PG & Under</option>
+            <option value="PG-13">PG-13 & Under</option>
+            <option value="R" selected>R & Under</option>
+            <option value="NC-17">All Ratings</option>
+        </select>
+
+        <label>
+            <input type="checkbox" id="recentOnly">
+            Recent Movies
+        </label>
+
+        <label>
+            <input type="checkbox" id="theatersOnly">
+            In Theaters
+        </label>
+
+        <button onclick="generateCalendar()">
+            Generate 365 Days
+        </button>
+
+    </div>
+
+    <div id="movieList"></div>
+
+    <script src="app.js"></script>
+
+</body>
+</html>
