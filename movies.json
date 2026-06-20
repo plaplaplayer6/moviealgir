@@ -1,0 +1,22 @@
+[
+  {
+    "title": "The Mandalorian & Grogu",
+    "rating": "PG-13",
+    "imdb": 8.4,
+    "votes": 15000,
+    "year": 2026,
+    "inTheaters": true,
+    "releaseDate": "2026-05-22",
+    "genre": "Adventure"
+  },
+  {
+    "title": "Backrooms",
+    "rating": "PG-13",
+    "imdb": 8.0,
+    "votes": 9000,
+    "year": 2026,
+    "inTheaters": true,
+    "releaseDate": "2026-07-10",
+    "genre": "Horror"
+  }
+]
