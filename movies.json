@@ -1,22 +1,152 @@
-[
-  {
-    "title": "The Mandalorian & Grogu",
-    "rating": "PG-13",
-    "imdb": 8.4,
-    "votes": 15000,
-    "year": 2026,
-    "inTheaters": true,
-    "releaseDate": "2026-05-22",
-    "genre": "Adventure"
-  },
-  {
-    "title": "Backrooms",
-    "rating": "PG-13",
-    "imdb": 8.0,
-    "votes": 9000,
-    "year": 2026,
-    "inTheaters": true,
-    "releaseDate": "2026-07-10",
-    "genre": "Horror"
-  }
-]
+const fs = require("fs");
+const readline = require("readline");
+const zlib = require("zlib");
+
+const TITLE_FILE = "title.basics.tsv.gz";
+const RATING_FILE = "title.ratings.tsv.gz";
+
+const ratingsMap = new Map();
+
+async function loadRatings() {
+
+    return new Promise((resolve, reject) => {
+
+        const stream =
+            fs.createReadStream(RATING_FILE)
+            .pipe(zlib.createGunzip());
+
+        const rl =
+            readline.createInterface({
+                input: stream,
+                crlfDelay: Infinity
+            });
+
+        let first = true;
+
+        rl.on("line", line => {
+
+            if (first) {
+                first = false;
+                return;
+            }
+
+            const [
+                tconst,
+                averageRating,
+                numVotes
+            ] = line.split("\t");
+
+            ratingsMap.set(tconst, {
+                imdb: Number(averageRating),
+                votes: Number(numVotes)
+            });
+        });
+
+        rl.on("close", resolve);
+        rl.on("error", reject);
+    });
+}
+
+async function generateMovies() {
+
+    await loadRatings();
+
+    const movies = [];
+
+    const stream =
+        fs.createReadStream(TITLE_FILE)
+        .pipe(zlib.createGunzip());
+
+    const rl =
+        readline.createInterface({
+            input: stream,
+            crlfDelay: Infinity
+        });
+
+    let first = true;
+
+    rl.on("line", line => {
+
+        if (first) {
+            first = false;
+            return;
+        }
+
+        const cols = line.split("\t");
+
+        const [
+            tconst,
+            titleType,
+            primaryTitle,
+            originalTitle,
+            isAdult,
+            startYear,
+            endYear,
+            runtimeMinutes,
+            genres
+        ] = cols;
+
+        if (titleType !== "movie") {
+            return;
+        }
+
+        const rating =
+            ratingsMap.get(tconst);
+
+        movies.push({
+
+            id: tconst,
+
+            title: primaryTitle,
+
+            originalTitle,
+
+            year:
+                startYear === "\\N"
+                    ? null
+                    : Number(startYear),
+
+            adult:
+                isAdult === "1",
+
+            runtime:
+                runtimeMinutes === "\\N"
+                    ? null
+                    : Number(runtimeMinutes),
+
+            genres:
+                genres === "\\N"
+                    ? []
+                    : genres.split(","),
+
+            imdb:
+                rating?.imdb || 0,
+
+            votes:
+                rating?.votes || 0
+        });
+    });
+
+    rl.on("close", () => {
+
+        movies.sort(
+            (a, b) =>
+                b.imdb - a.imdb
+        );
+
+        fs.writeFileSync(
+            "movies.json",
+            JSON.stringify(
+                movies,
+                null,
+                2
+            )
+        );
+
+        console.log(
+            `Generated ${movies.length} movies`
+        );
+    });
+}
+
+generateMovies();
